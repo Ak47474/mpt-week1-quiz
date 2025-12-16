@@ -184,7 +184,7 @@ function shuffle(array) {
 }
 
 function loadQuiz() {
-  selectedQuestions = shuffle([...questionBank]);
+  selectedQuestions = shuffle([...questionBank]).slice(0, 10);
   const quizDiv = document.getElementById('quiz');
   quizDiv.innerHTML = '';
 
@@ -253,7 +253,7 @@ function submitQuiz() {
       </div>`;
   });
 
-  resultDiv.innerHTML = `<h2>Your Score: ${score} / ${selectedQuestions.length}</h2>` + resultDiv.innerHTML;
+  resultDiv.innerHTML = `<h2>Your Score: ${score} / 10</h2>` + resultDiv.innerHTML;
 
   if (score < 4) launchConfetti('fail');
   if (score >= 4 && score <= 7) launchConfetti('normal');
