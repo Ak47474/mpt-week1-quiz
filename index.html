@@ -2,33 +2,104 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>MPT Entrance – Week 1 MCQ Quiz</title>
+  <title>MPT Entrance – Smart Quiz Engine</title>
   <style>
-    body { font-family: 'Segoe UI', Arial, sans-serif; background:linear-gradient(135deg,#e3f2fd,#fce4ec); padding:20px; }
-    .container { max-width:900px; margin:auto; background:#fff; padding:25px; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.1); }
-    h1 { text-align:center; color:#2c3e50; }
-    .question { margin-bottom:20px; padding:15px; border-radius:8px; background:#f9fafb; }
-    .options label { display:block; margin:6px 0; cursor:pointer; }
-    button { padding:10px 22px; margin-top:20px; border:none; border-radius:6px; background:#1976d2; color:white; font-size:16px; cursor:pointer; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg,#e3f2fd,#fce4ec);
+      padding:12px;
+    }
+    .container {
+      max-width:1000px;
+      margin:auto;
+      background:#fff;
+      padding:20px;
+      border-radius:18px;
+      box-shadow:0 15px 35px rgba(0,0,0,0.15);
+    }
+    h1 {
+      text-align:center;
+      color:#1e293b;
+      margin-bottom:10px;
+    }
+    .subtitle {
+      text-align:center;
+      color:#64748b;
+      margin-bottom:25px;
+    }
+    .question {
+      margin-bottom:20px;
+      padding:18px;
+      border-radius:12px;
+      background:#f8fafc;
+      border-left:5px solid #1976d2;
+    }
+    .options label {
+      display:block;
+      margin:8px 0;
+      padding:8px 12px;
+      border-radius:8px;
+      cursor:pointer;
+      transition:0.2s;
+    }
+    .options label:hover { background:#e3f2fd; }
+
+    button {
+      padding:12px 26px;
+      margin-top:25px;
+      border:none;
+      border-radius:8px;
+      background:#1976d2;
+      color:white;
+      font-size:16px;
+      cursor:pointer;
+    }
     button:hover { background:#0d47a1; }
-    .result { margin-top:20px; font-weight:bold; }
-    .correct { color:green; }
-    .wrong { color:red; }
     #retakeBtn { display:none; background:#2e7d32; }
     #retakeBtn:hover { background:#1b5e20; }
+
+    .result { margin-top:30px; }
+    .correct { color:#2e7d32; }
+    .wrong { color:#c62828; }
+
+    /* Confetti */
+    .confetti {
+      position:fixed;
+      top:-10px;
+      animation: fall 3s linear forwards;
+      z-index:9999;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(720deg) scale(1.4);
+        opacity:0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 1.4rem; }
+      .subtitle { font-size: 0.9rem; }
+      .question { padding:14px; }
+      .options label { font-size:0.95rem; }
+      button { width:100%; margin-top:15px; }
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <h1>MPT Entrance – Week 1 MCQs</h1>
+  <p class="subtitle">Smart Practice Quiz • Instant Feedback • Performance Celebration</p>
+
   <div id="quiz"></div>
-  <button id="submitBtn" onclick="submitQuiz()">Submit</button>
+
+  <button id="submitBtn" onclick="submitQuiz()">Submit Quiz</button>
   <button id="retakeBtn" onclick="retakeQuiz()">Retake Quiz</button>
+
   <div id="result" class="result"></div>
 </div>
 
 <script>
-// WEEK 1: 100 HARD ENTRANCE-LEVEL MCQs (ANATOMY + PHYSIOLOGY)
 const questionBank = [
 {q:"Primary stabilizer preventing anterior tibial translation at 20° knee flexion:",options:["ACL","PCL","MCL","Popliteus"],answer:0},
 {q:"Muscle producing last 30° of knee extension:",options:["Vastus lateralis","Vastus medialis","Rectus femoris","Popliteus"],answer:1},
@@ -113,7 +184,7 @@ function shuffle(array) {
 }
 
 function loadQuiz() {
-  selectedQuestions = shuffle([...questionBank]).slice(0, 10);
+  selectedQuestions = shuffle([...questionBank]);
   const quizDiv = document.getElementById('quiz');
   quizDiv.innerHTML = '';
 
@@ -134,6 +205,33 @@ function loadQuiz() {
   });
 }
 
+function launchConfetti(type) {
+  let emojis = [];
+  let count = 40;
+
+  if (type === 'fail') {
+    emojis = ['👎','😞','❌'];
+    count = 25;
+  } else if (type === 'normal') {
+    emojis = ['🎉','✨','🎊'];
+    count = 50;
+  } else if (type === 'sunflower') {
+    emojis = ['🌻','🌻','🌻','🎉','✨'];
+    count = 70;
+  }
+
+  for (let i = 0; i < count; i++) {
+    const conf = document.createElement('div');
+    conf.className = 'confetti';
+    conf.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    conf.style.left = Math.random()*100 + 'vw';
+    conf.style.fontSize = (type === 'sunflower' ? 36 : 26) + 'px';
+    conf.style.animationDuration = (2 + Math.random()*2.5) + 's';
+    document.body.appendChild(conf);
+    setTimeout(() => conf.remove(), 4500);
+  }
+}
+
 function submitQuiz() {
   let score = 0;
   const resultDiv = document.getElementById('result');
@@ -141,15 +239,26 @@ function submitQuiz() {
 
   selectedQuestions.forEach((q, index) => {
     const selected = document.querySelector(`input[name="q${index}"]:checked`);
-    if (selected && parseInt(selected.value) === q.answer) {
-      score++;
-      resultDiv.innerHTML += `<p class="correct">Q${index + 1}: Correct</p>`;
-    } else {
-      resultDiv.innerHTML += `<p class="wrong">Q${index + 1}: Wrong (Correct: ${q.options[q.answer]})</p>`;
-    }
+    const userAnswer = selected ? q.options[selected.value] : 'Not Answered';
+    const correctAnswer = q.options[q.answer];
+
+    if (selected && parseInt(selected.value) === q.answer) score++;
+
+    resultDiv.innerHTML += `
+      <div class="${selected && parseInt(selected.value) === q.answer ? 'correct' : 'wrong'}">
+        <p><strong>Q${index + 1}. ${q.q}</strong></p>
+        <p>Your Answer: ${userAnswer}</p>
+        <p>Correct Answer: ${correctAnswer}</p>
+        <hr>
+      </div>`;
   });
 
-  resultDiv.innerHTML = `<h3>Your Score: ${score} / ${selectedQuestions.length}</h3>` + resultDiv.innerHTML;
+  resultDiv.innerHTML = `<h2>Your Score: ${score} / ${selectedQuestions.length}</h2>` + resultDiv.innerHTML;
+
+  if (score < 4) launchConfetti('fail');
+  if (score >= 4 && score <= 7) launchConfetti('normal');
+  if (score >= 8) launchConfetti('sunflower');
+
   document.getElementById('submitBtn').style.display = 'none';
   document.getElementById('retakeBtn').style.display = 'inline-block';
 }
