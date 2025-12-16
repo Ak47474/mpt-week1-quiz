@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MPT Entrance – Week 1 MCQ Quiz</title>
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background:linear-gradient(135deg,#e3f2fd,#fce4ec); padding:20px; }
+    .container { max-width:900px; margin:auto; background:#fff; padding:25px; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.1); }
+    h1 { text-align:center; color:#2c3e50; }
+    .question { margin-bottom:20px; padding:15px; border-radius:8px; background:#f9fafb; }
+    .options label { display:block; margin:6px 0; cursor:pointer; }
+    button { padding:10px 22px; margin-top:20px; border:none; border-radius:6px; background:#1976d2; color:white; font-size:16px; cursor:pointer; }
+    button:hover { background:#0d47a1; }
+    .result { margin-top:20px; font-weight:bold; }
+    .correct { color:green; }
+    .wrong { color:red; }
+    #retakeBtn { display:none; background:#2e7d32; }
+    #retakeBtn:hover { background:#1b5e20; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>MPT Entrance – Week 1 MCQs</h1>
+  <div id="quiz"></div>
+  <button id="submitBtn" onclick="submitQuiz()">Submit</button>
+  <button id="retakeBtn" onclick="retakeQuiz()">Retake Quiz</button>
+  <div id="result" class="result"></div>
+</div>
+
+<script>
+// WEEK 1: 100 HARD ENTRANCE-LEVEL MCQs (ANATOMY + PHYSIOLOGY)
+const questionBank = [
+{q:"Primary stabilizer preventing anterior tibial translation at 20° knee flexion:",options:["ACL","PCL","MCL","Popliteus"],answer:0},
+{q:"Muscle producing last 30° of knee extension:",options:["Vastus lateralis","Vastus medialis","Rectus femoris","Popliteus"],answer:1},
+{q:"Pain from hip joint is commonly referred to:",options:["Lateral thigh","Groin","Popliteal fossa","Buttock only"],answer:1},
+{q:"Scapular plane lies approximately:",options:["0° frontal","30° anterior to frontal","45° anterior","90° sagittal"],answer:1},
+{q:"Capsular pattern of shoulder is:",options:["ER > ABD > IR","ABD > ER > IR","IR > ER > ABD","Flexion > ABD"],answer:0},
+{q:"Quadrangular space transmits:",options:["Axillary nerve","Radial nerve","Median nerve","Ulnar nerve"],answer:0},
+{q:"Dermatome of nipple line:",options:["T2","T4","T6","T8"],answer:1},
+{q:"Structure injured in surgical neck fracture:",options:["Radial nerve","Axillary nerve","Median nerve","Ulnar nerve"],answer:1},
+{q:"Primary hip abductor during single-leg stance:",options:["Gluteus maximus","Gluteus medius","Tensor fascia lata","Adductors"],answer:1},
+{q:"End feel of normal ankle dorsiflexion:",options:["Hard","Soft","Firm","Empty"],answer:2},
+
+{q:"Loss of vibration sense indicates lesion of:",options:["Spinothalamic tract","Anterior horn","Dorsal column","Corticospinal tract"],answer:2},
+{q:"Tract responsible for voluntary motor control:",options:["Spinothalamic","Corticospinal","Vestibulospinal","Rubrospinal"],answer:1},
+{q:"Broca’s area lesion causes:",options:["Receptive aphasia","Expressive aphasia","Dysarthria","Agnosia"],answer:1},
+{q:"Decussation of pyramids occurs in:",options:["Pons","Midbrain","Medulla","Spinal cord"],answer:2},
+{q:"Cerebellar lesion results in:",options:["Spasticity","Rigidity","Ataxia","Paralysis"],answer:2},
+
+{q:"Fast twitch fibers primarily use:",options:["Aerobic metabolism","Fat oxidation","Anaerobic glycolysis","Oxidative phosphorylation"],answer:2},
+{q:"Isometric contraction shows:",options:["↓ length, ↑ tension","Constant length, ↑ tension","↑ length, ↓ tension","Constant length, constant tension"],answer:1},
+{q:"Motor end plate neurotransmitter:",options:["GABA","Dopamine","Acetylcholine","Serotonin"],answer:2},
+{q:"Sliding filament theory involves interaction between:",options:["Actin & myosin","Myosin & troponin","Actin & tropomyosin","Myosin & titin"],answer:0},
+{q:"Recruitment of motor units follows:",options:["Reverse size principle","Size principle","Random","Frequency principle"],answer:1},
+
+{q:"Primary determinant of VO2 max:",options:["Lung diffusion","Hemoglobin","Cardiac output","Muscle mass"],answer:2},
+{q:"Stroke volume is directly proportional to:",options:["Afterload","Preload","Heart rate","Blood viscosity"],answer:1},
+{q:"Frank–Starling law relates to:",options:["Contractility","Preload","Afterload","Heart rate"],answer:1},
+{q:"Normal resting heart rate adult:",options:["40–60","60–100","100–120","120–140"],answer:1},
+{q:"Physiological hypertrophy seen in athletes due to:",options:["Pressure overload","Volume overload","Ischemia","Afterload increase"],answer:1},
+
+{q:"Primary muscle of quiet inspiration:",options:["External intercostals","Internal intercostals","Diaphragm","SCM"],answer:2},
+{q:"Quiet expiration occurs by:",options:["Internal intercostals","Abdominals","Elastic recoil","Diaphragm"],answer:2},
+{q:"FEV1 is reduced mainly in:",options:["Restrictive disease","Obstructive disease","Pleural effusion","Kyphoscoliosis"],answer:1},
+{q:"Surfactant function is to:",options:["Increase surface tension","Decrease surface tension","Increase compliance","Decrease diffusion"],answer:1},
+{q:"Primary respiratory center is located in:",options:["Midbrain","Pons","Medulla","Cerebellum"],answer:2},
+
+{q:"Henneman size principle refers to recruitment based on:",options:["Speed","Size","Force","Frequency"],answer:1},
+{q:"Golgi tendon organ responds to:",options:["Muscle length","Muscle tension","Joint position","Velocity"],answer:1},
+{q:"Muscle spindle primary ending is:",options:["Type Ia","Type Ib","Type II","Type III"],answer:0},
+{q:"Reciprocal inhibition occurs via:",options:["Ib afferent","Ia inhibitory interneuron","Renshaw cell","Gamma neuron"],answer:1},
+{q:"UMN lesion leads to:",options:["Flaccidity","Hypotonia","Hyperreflexia","Fasciculations"],answer:2},
+{q:"LMN lesion shows:",options:["Spasticity","Hypertonia","Fasciculations","Clonus"],answer:2},
+{q:"Primary somatosensory cortex located in:",options:["Precentral gyrus","Postcentral gyrus","Parietal lobe","Temporal lobe"],answer:1},
+{q:"Muscle fatigue is initially due to:",options:["Lactic acid","ATP depletion","Neural inhibition","Glycogen loss"],answer:1},
+{q:"Normal adult tidal volume:",options:["250 ml","500 ml","750 ml","1000 ml"],answer:1},
+{q:"Residual volume cannot be measured by:",options:["Spirometry","Helium dilution","Body plethysmography","Nitrogen washout"],answer:0},
+{q:"Chemoreceptors sensitive to CO2 located in:",options:["Carotid body","Aortic body","Medulla","Hypothalamus"],answer:2},
+{q:"Primary pacemaker of heart:",options:["AV node","Bundle of His","SA node","Purkinje fibers"],answer:2},
+{q:"AV node delay is due to:",options:["Small fibers","Low Na+","High Ca2+","High K+"],answer:0},
+{q:"Normal ejection fraction:",options:["30–40%","40–50%","55–70%","70–85%"],answer:2},
+{q:"Baroreceptors located in:",options:["Vena cava","Carotid sinus","Pulmonary artery","Coronary arteries"],answer:1},
+{q:"QRS complex represents:",options:["Atrial depolarization","Ventricular depolarization","Ventricular repolarization","Atrial repolarization"],answer:1},
+{q:"Main muscle preventing foot drop:",options:["Peroneus longus","Tibialis anterior","Gastrocnemius","Soleus"],answer:1},
+{q:"Normal lumbar lordosis increases with:",options:["Hamstring tightness","Hip flexor tightness","Gluteal weakness","Abdominal strength"],answer:1},
+{q:"Hip joint is a:",options:["Hinge","Saddle","Ball and socket","Ellipsoid"],answer:2},
+{q:"Joint most prone to dislocation:",options:["Hip","Shoulder","Elbow","Knee"],answer:1},
+{q:"Primary stabilizer of knee in extension:",options:["ACL","PCL","Quadriceps","Posterior capsule"],answer:3},
+{q:"Normal muscle power grade against gravity:",options:["Grade 2","Grade 3","Grade 4","Grade 5"],answer:1},
+{q:"Scale used to assess spasticity:",options:["Barthel","Ashworth","Berg","MMSE"],answer:1},
+{q:"Most reliable sign of UMN lesion:",options:["Clonus","Fasciculation","Atrophy","Hypotonia"],answer:0},
+{q:"Primary curve developing first in scoliosis:",options:["Thoracic","Lumbar","Cervical","Compensatory"],answer:0},
+{q:"Normal ankle plantarflexion ROM:",options:["20°","30°","40°","50°"],answer:3},
+{q:"End feel of knee extension:",options:["Soft","Firm","Hard","Empty"],answer:2},
+{q:"Muscle initiating shoulder abduction:",options:["Supraspinatus","Deltoid","Infraspinatus","Trapezius"],answer:0},
+{q:"Normal resting respiratory rate adult:",options:["8–10","12–20","20–30","30–40"],answer:1},
+{q:"Oxygen dissociation curve shifts right with:",options:["↓ CO2","↓ temperature","↓ pH","↓ 2,3-DPG"],answer:2},
+{q:"Primary factor determining diffusion rate:",options:["Surface area","Ventilation","Perfusion","Compliance"],answer:0},
+{q:"Mean arterial pressure maintains perfusion to:",options:["Heart","Brain","Kidneys","All vital organs"],answer:3},
+{q:"Cardiac output =:",options:["SV × HR","BP × HR","SV / HR","BP × SV"],answer:0},
+{q:"Muscle tone regulated by:",options:["Alpha motor neuron","Gamma motor neuron","Renshaw cell","Interneuron"],answer:1},
+{q:"Reflex arc does NOT include:",options:["Receptor","Effector","Cortex","Afferent neuron"],answer:2}
+];
+
+let selectedQuestions = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function loadQuiz() {
+  selectedQuestions = shuffle([...questionBank]).slice(0, 10);
+  const quizDiv = document.getElementById('quiz');
+  quizDiv.innerHTML = '';
+
+  selectedQuestions.forEach((q, index) => {
+    const div = document.createElement('div');
+    div.className = 'question';
+    div.innerHTML = `<p><strong>Q${index + 1}. ${q.q}</strong></p>`;
+
+    const optionsDiv = document.createElement('div');
+    optionsDiv.className = 'options';
+
+    q.options.forEach((opt, i) => {
+      optionsDiv.innerHTML += `<label><input type="radio" name="q${index}" value="${i}"> ${opt}</label>`;
+    });
+
+    div.appendChild(optionsDiv);
+    quizDiv.appendChild(div);
+  });
+}
+
+function submitQuiz() {
+  let score = 0;
+  const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = '';
+
+  selectedQuestions.forEach((q, index) => {
+    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+    if (selected && parseInt(selected.value) === q.answer) {
+      score++;
+      resultDiv.innerHTML += `<p class="correct">Q${index + 1}: Correct</p>`;
+    } else {
+      resultDiv.innerHTML += `<p class="wrong">Q${index + 1}: Wrong (Correct: ${q.options[q.answer]})</p>`;
+    }
+  });
+
+  resultDiv.innerHTML = `<h3>Your Score: ${score} / ${selectedQuestions.length}</h3>` + resultDiv.innerHTML;
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('retakeBtn').style.display = 'inline-block';
+}
+
+function retakeQuiz() {
+  document.getElementById('result').innerHTML = '';
+  document.getElementById('submitBtn').style.display = 'inline-block';
+  document.getElementById('retakeBtn').style.display = 'none';
+  loadQuiz();
+}
+
+loadQuiz();
+</script>
+</body>
+</html>
